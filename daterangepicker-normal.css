@@ -1,15 +1,17 @@
- .daterangepicker.dropdown-menu {
+.daterangepicker.dropdown-menu {
   max-width: none;
   z-index: 3000;
   display: none;
 }
- .daterangepicker {
-   background: #3f4246;
- }
+
+.daterangepicker {
+  background: #3f4246;
+}
 
 .daterangepicker .calendar-holder {
   float: left;
 }
+
 .daterangepicker .footer {
   clear: both;
   padding-top: 5px;
@@ -28,10 +30,10 @@
 }
 
 .daterangepicker .confirm-buttons .apply {
- border: none;
- background: #1abc9c;
- color: #fff;
- padding: 5px;
+  border: none;
+  background: #1abc9c;
+  color: #fff;
+  padding: 5px;
 }
 
 .daterangepicker.opensleft .ranges, .daterangepicker.opensleft .calendar {
@@ -60,20 +62,17 @@
   max-width: 270px;
 }
 
-
 .daterangepicker .calendar.right {
   border-left: 1px solid #65686b;
 }
 
 .daterangepicker.show-calendar .calendar {
-    display: block;
+  display: block;
 }
 
 .daterangepicker .calendar.single .calendar-date {
   border: none;
 }
-
-
 
 .daterangepicker .calendar th, .daterangepicker .calendar td {
   font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
@@ -172,9 +171,10 @@
 .daterangepicker table {
   width: 100%;
   margin: 0;
-  border-collapse:collapse;
+  border-collapse: collapse;
 
 }
+
 .daterangepicker tbody {
   background: #fff;
 }
@@ -187,25 +187,30 @@
   white-space: nowrap;
   color: #7f8c8d;
 }
- .daterangepicker .calendar thead tr:last-child {
-   background: #fff;
- }
+
+.daterangepicker .calendar thead tr:last-child {
+  background: #fff;
+}
 
 .daterangepicker .calendar thead tr:first-child th {
- color: #fff;
+  color: #fff;
   padding: 5px;
 }
 
 .daterangepicker td.off {
-  color: #999;
+  color: #bdc3c7;
 }
 
 .daterangepicker td.disabled {
   color: #999;
 }
 
-.daterangepicker td.available:hover, .daterangepicker th.available:hover {
+.daterangepicker td.available:hover {
   background: #e0e0e0;
+}
+
+.daterangepicker th.available:hover {
+  background: #4a4d51;
 }
 
 .daterangepicker td.in-range {
@@ -255,7 +260,7 @@
 
 .daterangepicker .range-text {
   padding-left: 20px;
-  font-style:italic;
+  font-style: italic;
   font-size: 12px;
   color: #bdc3c7;
 }
