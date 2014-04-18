@@ -124,7 +124,6 @@
                 fromLabel: 'From',
                 toLabel: 'To',
                 weekLabel: 'W',
-                customRangeLabel: 'Custom Range',
                 daysOfWeek: moment()._lang._weekdaysMin.slice(),
                 monthNames: moment()._lang._monthsShort.slice(),
                 firstDay: 0
@@ -211,10 +210,6 @@
 
                 if (typeof options.locale.weekLabel === 'string') {
                   this.locale.weekLabel = options.locale.weekLabel;
-                }
-
-                if (typeof options.locale.customRangeLabel === 'string') {
-                  this.locale.customRangeLabel = options.locale.customRangeLabel;
                 }
             }
 
@@ -304,7 +299,6 @@
                 for (range in this.ranges) {
                     list += '<li>' + range + '</li>';
                 }
-                list += '<li>' + this.locale.customRangeLabel + '</li>';
                 list += '</ul>';
                 this.container.find('.ranges ul').remove();
                 this.container.find('.ranges').prepend(list);
@@ -333,7 +327,6 @@
 
             this.oldStartDate = this.startDate.clone();
             this.oldEndDate = this.endDate.clone();
-            this.oldChosenLabel = this.chosenLabel;
 
             this.leftCalendar = {
                 month: moment([this.startDate.year(), this.startDate.month(), 1, this.startDate.hour(), this.startDate.minute()]),
@@ -353,9 +346,7 @@
                 right.removeClass('right').addClass('left');
             }
 
-            if (typeof options.ranges === 'undefined' && !this.singleDatePicker) {
-                this.container.addClass('show-calendar');
-            }
+            this.container.addClass('show-calendar');
 
             this.container.addClass('opens' + this.opens);
 
@@ -442,7 +433,7 @@
 
         notify: function () {
             this.updateView();
-            this.cb(this.startDate, this.endDate, this.chosenLabel);
+            this.cb(this.startDate, this.endDate);
         },
 
         move: function () {
@@ -529,10 +520,7 @@
 
         enterRange: function (e) {
             // mouse pointer has entered a range label
-            var label = e.target.innerHTML;
-            if (label == this.locale.customRangeLabel) {
-                this.updateView();
-            }
+            this.updateView();
         },
 
         showCalendars: function() {
@@ -554,26 +542,21 @@
 
         clickRange: function (e) {
             var label = e.target.innerHTML;
-            this.chosenLabel = label;
-            if (label == this.locale.customRangeLabel) {
-                this.showCalendars();
-            } else {
-                var dates = this.ranges[label];
+            var dates = this.ranges[label];
 
-                this.startDate = dates[0];
-                this.endDate = dates[1];
+            this.startDate = dates[0];
+            this.endDate = dates[1];
 
-                if (!this.timePicker) {
-                    this.startDate.startOf('day');
-                    this.endDate.endOf('day');
-                }
-
-                this.leftCalendar.month.month(this.startDate.month()).year(this.startDate.year()).hour(this.startDate.hour()).minute(this.startDate.minute());
-                this.rightCalendar.month.month(this.endDate.month()).year(this.endDate.year()).hour(this.endDate.hour()).minute(this.endDate.minute());
-                this.updateCalendars();
-
-                this.updateInputText();
+            if (!this.timePicker) {
+                this.startDate.startOf('day');
+                this.endDate.endOf('day');
             }
+
+            this.leftCalendar.month.month(this.startDate.month()).year(this.startDate.year()).hour(this.startDate.hour()).minute(this.startDate.minute());
+            this.rightCalendar.month.month(this.endDate.month()).year(this.endDate.year()).hour(this.endDate.hour()).minute(this.endDate.minute());
+            this.updateCalendars();
+
+            this.updateInputText();
         },
 
         clickPrev: function (e) {
@@ -643,13 +626,11 @@
                 $(e.target).addClass('active');
                 this.startDate = startDate;
                 this.endDate = endDate;
-                this.chosenLabel = this.locale.customRangeLabel;
             } else if (startDate.isAfter(endDate)) {
                 $(e.target).addClass('active');
                 var difference = this.endDate.diff(this.startDate);
                 this.startDate = startDate;
                 this.endDate = moment(startDate).add('ms', difference);
-                this.chosenLabel = this.locale.customRangeLabel;
             }
 
             this.leftCalendar.month.month(this.startDate.month()).year(this.startDate.year());
@@ -671,7 +652,6 @@
         clickCancel: function (e) {
             this.startDate = this.oldStartDate;
             this.endDate = this.oldEndDate;
-            this.chosenLabel = this.oldChosenLabel;
             this.updateView();
             this.updateCalendars();
             this.hide();
@@ -737,22 +717,14 @@
                 if (this.timePicker) {
                     if (this.startDate.isSame(this.ranges[range][0]) && this.endDate.isSame(this.ranges[range][1])) {
                         customRange = false;
-                        this.chosenLabel = this.container.find('.ranges li:eq(' + i + ')')
-                            .addClass('active').html();
                     }
                 } else {
                     //ignore times when comparing dates if time picker is not enabled
                     if (this.startDate.format('YYYY-MM-DD') == this.ranges[range][0].format('YYYY-MM-DD') && this.endDate.format('YYYY-MM-DD') == this.ranges[range][1].format('YYYY-MM-DD')) {
                         customRange = false;
-                        this.chosenLabel = this.container.find('.ranges li:eq(' + i + ')')
-                            .addClass('active').html();
                     }
                 }
                 i++;
-            }
-            if (customRange) {
-                this.chosenLabel = this.container.find('.ranges li:last')
-                    .addClass('active').html();
             }
         },
 
