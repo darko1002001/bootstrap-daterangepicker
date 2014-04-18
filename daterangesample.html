@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html dir="ltr" lang="en-US">
+   <head>
+      <meta charset="UTF-8" />
+      <title>A date range picker for Bootstrap</title>
+      <link rel="stylesheet" type="text/css" media="all" href="daterangepicker-normal.css" />
+      <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.1/jquery.min.js"></script>
+      <script type="text/javascript" src="moment.js"></script>
+      <script type="text/javascript" src="daterangepicker.js"></script>
+   </head>
+   <body>
+
+      <div class="container">
+         <div class="span12">
+
+          <h1>Usage Examples</h1>
+
+          <hr />
+
+            <h4>Basic Date Range Picker</h4>
+
+           <input type="text" style="width: 200px" name="reservation" id="reservation" class="form-control" value="2014-01-20 - 2014-01-22" />
+
+               <script type="text/javascript">
+               $(document).ready(function() {
+                  $('#reservation').daterangepicker({
+                    ranges: {
+                      '24h': [moment().subtract('days', 1), moment()],
+                      '7d': [moment().subtract('days', 6), moment()],
+                      '30d': [moment().subtract('days', 29), moment()]
+                    },
+                    format: 'YYYY-MM-DD'
+                  }, function(start, end, label) {
+                    console.log(start.toISOString(), end.toISOString(), label);
+                  });
+               });
+               </script>
+
+            </div>
+           </div>
+
+      </div>
+
+   </body>
+</html>

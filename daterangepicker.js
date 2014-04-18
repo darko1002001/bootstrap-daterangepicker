@@ -18,24 +18,22 @@
 
         //create the picker HTML object
         var DRPTemplate = '<div class="daterangepicker dropdown-menu">' +
-                '<div class="calendar left"></div>' +
-                '<div class="calendar right"></div>' +
-                '<div class="ranges">' +
-                  '<div class="range_inputs">' +
-                    '<div class="daterangepicker_start_input">' +
-                      '<label for="daterangepicker_start"></label>' +
-                      '<input class="input-mini" type="text" name="daterangepicker_start" value="" disabled="disabled" />' +
-                    '</div>' +
-                    '<div class="daterangepicker_end_input">' +
-                      '<label for="daterangepicker_end"></label>' +
-                      '<input class="input-mini" type="text" name="daterangepicker_end" value="" disabled="disabled" />' +
-                    '</div>' +
-                    '<button class="applyBtn" disabled="disabled"></button>&nbsp;' +
-                    '<button class="cancelBtn"></button>' +
+                  '<div class="ranges">' +
                   '</div>' +
-                '</div>' +
+                  '<div class="calendar-holder">' +
+                    '<div>' +
+                      '<div class="calendar right"></div>' +
+                      '<div class="calendar left"></div>' +
+                    '</div>' +
+                    '<div class="footer">' +
+                      '<span class="range-text"></span>' +
+                      '<div class="confirm-buttons">' +
+                        '<button class="btn cancel"></button>&nbsp;' +
+                        '<button class="btn apply" disabled="disabled"></button>' +
+                      '</div>' +
+                    "</div>" +
+                  '</div>' +
               '</div>';
-
         //custom options
         if (typeof options !== 'object' || options === null)
             options = {};
@@ -50,14 +48,12 @@
         $.each(this.buttonClasses, function (idx, val) {
             c.find('button').addClass(val);
         });
-        this.container.find('.daterangepicker_start_input label').html(this.locale.fromLabel);
-        this.container.find('.daterangepicker_end_input label').html(this.locale.toLabel);
         if (this.applyClass.length)
-            this.container.find('.applyBtn').addClass(this.applyClass);
+            this.container.find('.btn.apply').addClass(this.applyClass);
         if (this.cancelClass.length)
-            this.container.find('.cancelBtn').addClass(this.cancelClass);
-        this.container.find('.applyBtn').html(this.locale.applyLabel);
-        this.container.find('.cancelBtn').html(this.locale.cancelLabel);
+            this.container.find('.btn.cancel').addClass(this.cancelClass);
+        this.container.find('.btn.apply').html(this.locale.applyLabel);
+        this.container.find('.btn.cancel').html(this.locale.cancelLabel);
 
         //event listeners
 
@@ -71,10 +67,11 @@
             .on('change.daterangepicker', 'select.monthselect', $.proxy(this.updateMonthYear, this))
             .on('change.daterangepicker', 'select.hourselect,select.minuteselect,select.ampmselect', $.proxy(this.updateTime, this));
 
-        this.container.find('.ranges')
-            .on('click.daterangepicker', 'button.applyBtn', $.proxy(this.clickApply, this))
-            .on('click.daterangepicker', 'button.cancelBtn', $.proxy(this.clickCancel, this))
-            .on('click.daterangepicker', '.daterangepicker_start_input,.daterangepicker_end_input', $.proxy(this.showCalendars, this))
+      this.container.find('.confirm-buttons')
+        .on('click.daterangepicker', '.btn.apply', $.proxy(this.clickApply, this))
+        .on('click.daterangepicker', '.btn.cancel', $.proxy(this.clickCancel, this));
+
+      this.container.find('.ranges')
             .on('click.daterangepicker', 'li', $.proxy(this.clickRange, this))
             .on('mouseenter.daterangepicker', 'li', $.proxy(this.enterRange, this))
             .on('mouseleave.daterangepicker', 'li', $.proxy(this.updateFormInputs, this));
@@ -88,7 +85,6 @@
         } else {
             this.element.on('click.daterangepicker', $.proxy(this.toggle, this));
         }
-
     };
 
     DateRangePicker.prototype = {
@@ -407,14 +403,14 @@
         },
 
         updateFormInputs: function () {
-            this.container.find('input[name=daterangepicker_start]').val(this.startDate.format(this.format));
-            this.container.find('input[name=daterangepicker_end]').val(this.endDate.format(this.format));
-
             if (this.startDate.isSame(this.endDate) || this.startDate.isBefore(this.endDate)) {
-                this.container.find('button.applyBtn').removeAttr('disabled');
+                this.container.find('.btn.apply').removeAttr('disabled');
             } else {
-                this.container.find('button.applyBtn').attr('disabled', 'disabled');
+                this.container.find('.btn.apply').attr('disabled', 'disabled');
             }
+            var ms = this.endDate.diff(this.startDate);
+            var d = moment.duration(ms);
+            this.container.find('.range-text').text(Math.ceil(d.asDays()) + " Days range");
         },
 
         updateFromControl: function () {
@@ -536,10 +532,6 @@
             var label = e.target.innerHTML;
             if (label == this.locale.customRangeLabel) {
                 this.updateView();
-            } else {
-                var dates = this.ranges[label];
-                this.container.find('input[name=daterangepicker_start]').val(dates[0].format(this.format));
-                this.container.find('input[name=daterangepicker_end]').val(dates[1].format(this.format));
             }
         },
 
@@ -581,10 +573,6 @@
                 this.updateCalendars();
 
                 this.updateInputText();
-
-                this.hideCalendars();
-                this.hide();
-                this.element.trigger('apply.daterangepicker', this);
             }
         },
 
@@ -614,13 +602,6 @@
             var row = title.substr(1, 1);
             var col = title.substr(3, 1);
             var cal = $(e.target).parents('.calendar');
-
-            if (cal.hasClass('left')) {
-                this.container.find('input[name=daterangepicker_start]').val(this.leftCalendar.calendar[row][col].format(this.format));
-            } else {
-                this.container.find('input[name=daterangepicker_end]').val(this.rightCalendar.calendar[row][col].format(this.format));
-            }
-
         },
 
         clickDate: function (e) {
